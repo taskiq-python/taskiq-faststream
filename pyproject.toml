@@ -38,6 +38,7 @@ anyio = "^3.6.1"
 pytest-xdist = { version = "^2.5.0", extras = ["psutil"] }
 types-mock = "^4.0.15"
 black = "^23.1.0"
+ruff = "^0.1.5"
 
 [tool.mypy]
 strict = true
