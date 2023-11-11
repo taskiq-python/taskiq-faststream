@@ -1,0 +1,126 @@
+[tool.poetry]
+name = "taskiq-faststream"
+description = ""
+authors = ["Taskiq team <taskiq@no-reply.com>"]
+maintainers = ["Taskiq team <taskiq@no-reply.com>"]
+version = "0.1.0"
+readme = "README.md"
+license = "LICENSE"
+classifiers = [
+    "Typing :: Typed",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Operating System :: OS Independent",
+    "Intended Audience :: Developers",
+    "Topic :: System :: Networking",
+    "Development Status :: 3 - Alpha",
+]
+keywords = ["taskiq", "tasks", "distributed", "async"]
+packages = [{ include = "taskiq_faststream" }]
+
+[tool.poetry.dependencies]
+python = "^3.8.1"
+taskiq = "^0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.1.2"
+mypy = "^1"
+pre-commit = "^2.20.0"
+coverage = "^6.4.2"
+pytest-cov = "^3.0.0"
+mock = "^4.0.3"
+anyio = "^3.6.1"
+pytest-xdist = { version = "^2.5.0", extras = ["psutil"] }
+types-mock = "^4.0.15"
+black = "^23.1.0"
+
+[tool.mypy]
+strict = true
+ignore_missing_imports = true
+allow_subclassing_any = true
+allow_untyped_calls = true
+pretty = true
+show_error_codes = true
+implicit_reexport = true
+allow_untyped_decorators = true
+warn_return_any = false
+warn_unused_ignores = false
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+# List of enabled rulsets.
+# See https://docs.astral.sh/ruff/rules/ for more information.
+select = [
+    "E",   # Error
+    "F",   # Pyflakes
+    "W",   # Pycodestyle
+    "C90", # McCabe complexity
+    "I",   # Isort
+    "N",   # pep8-naming
+    "D",   # Pydocstyle
+    "ANN", # Pytype annotations
+    "S",   # Bandit
+    "B",   # Bugbear
+    "COM", # Commas
+    "C4",  # Comprehensions
+    "ISC", # Implicit string concat
+    "PIE", # Unnecessary code
+    "T20", # Catch prints
+    "PYI", # validate pyi files
+    "Q",   # Checks for quotes
+    "RSE", # Checks raise statements
+    "RET", # Checks return statements
+    "SLF", # Self checks
+    "SIM", # Simplificator
+    "PTH", # Pathlib checks
+    "ERA", # Checks for commented out code
+    "PL",  # PyLint checks
+    "RUF", # Specific to Ruff checks
+]
+ignore = [
+    "D105",    # Missing docstring in magic method
+    "D107",    # Missing docstring in __init__
+    "D212",    # Multi-line docstring summary should start at the first line
+    "D401",    # First line should be in imperative mood
+    "D104",    # Missing docstring in public package
+    "D100",    # Missing docstring in public module
+    "ANN102",  # Missing type annotation for self in method
+    "ANN101",  # Missing type annotation for argument
+    "ANN401",  # typing.Any are disallowed in `**kwargs
+    "PLR0913", # Too many arguments for function call
+    "D106",    # Missing docstring in public nested class
+]
+exclude = [".venv/"]
+mccabe = { max-complexity = 10 }
+line-length = 88
+
+[tool.ruff.per-file-ignores]
+"tests/*" = [
+    "S101", # Use of assert detected
+    "S301", # Use of pickle detected
+    "D103", # Missing docstring in public function
+    "SLF001", # Private member accessed
+    "S311", # Standard pseudo-random generators are not suitable for security/cryptographic purposes
+    "D101", # Missing docstring in public class
+]
+
+[tool.ruff.pydocstyle]
+convention = "pep257"
+ignore-decorators = ["typing.overload"]
+
+[tool.ruff.pylint]
+allow-magic-value-types = ["int", "str", "float"]
+
+[tool.ruff.flake8-bugbear]
+extend-immutable-calls = [
+    "taskiq_dependencies.Depends",
+    "taskiq.TaskiqDepends",
+]
