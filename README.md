@@ -78,10 +78,16 @@ taskiq_broker.task(
 )
 
 # create scheduler object
-scheduler=TaskiqScheduler(
+scheduler = TaskiqScheduler(
     broker=taskiq_broker,
     sources=[LabelScheduleSource(taskiq_broker)],
 )
+```
+
+To run the scheduler, just use the following command
+
+```bash
+taskiq scheduler module:scheduler
 ```
 
 Also, you can wrap your **FastStream** application the same way (allows to use lifespan events and AsyncAPI documentation):
@@ -105,7 +111,7 @@ taskiq_broker = AppWrapper(app)
 # Code below omitted 👇
 ```
 
-Also, instead of using a final `message` argument, you can set a message callback to collect information right before sending:
+A little feature: instead of using a final `message` argument, you can set a message callback to collect information right before sending:
 
 ```python
 async def collect_information_to_send():
