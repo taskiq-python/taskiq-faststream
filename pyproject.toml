@@ -176,7 +176,7 @@ exclude = [".venv/"]
 ]
 
 [tool.ruff.pydocstyle]
-convention = "pep257"
+convention = "google"
 ignore-decorators = ["typing.overload"]
 
 [tool.ruff.pylint]

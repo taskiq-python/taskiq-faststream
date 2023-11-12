@@ -1,1 +1,3 @@
-"""Project was generated using https://github.com/taskiq-python/project-template/."""
+from taskiq_faststream.broker import BrokerWrapper
+
+__all__ = ("BrokerWrapper",)

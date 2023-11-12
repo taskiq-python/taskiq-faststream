@@ -1,4 +1,8 @@
+from unittest.mock import MagicMock
+from uuid import uuid4
+
 import pytest
+from anyio._backends._asyncio import Event
 
 
 @pytest.fixture(scope="session")
@@ -10,3 +14,18 @@ def anyio_backend() -> str:
     :return: backend name.
     """
     return "asyncio"
+
+
+@pytest.fixture()
+def subject() -> str:
+    return uuid4().hex
+
+
+@pytest.fixture()
+def mock() -> MagicMock:
+    return MagicMock()
+
+
+@pytest.fixture()
+def event() -> Event:
+    return Event()
