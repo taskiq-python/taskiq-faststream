@@ -75,7 +75,7 @@ class BrokerWrapper(AsyncBroker):
         *,
         schedule: typing.List[ScheduledTask],
         **kwargs: PublishParameters,
-    ) -> AsyncTaskiqDecoratedTask[[], None]:
+    ) -> AsyncTaskiqDecoratedTask[..., None]:
         """Register FastStream scheduled task.
 
         Args:
