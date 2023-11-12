@@ -1,58 +1,122 @@
-name: Testing package
+name: Test
 
-on: push
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    types: [opened, synchronize]
 
 jobs:
-  lint:
-    strategy:
-      matrix:
-        cmd:
-          - black
-          - mypy
-          - ruff
+  static_analysis:
+    if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Install poetry
-        run: pipx install poetry
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - uses: actions/setup-python@v4
         with:
-          python-version: "3.9"
-          cache: "poetry"
-      - name: Install deps
-        run: poetry install
-      - name: Run lint check
-        run: poetry run pre-commit run -a ${{ matrix.cmd }}
-  pytest:
-    permissions:
-      checks: write
-      pull-requests: write
-      contents: write
+          python-version: 3.8
+      - name: Install Dependencies and library
+        shell: bash
+        run: |
+          set -ux
+          python -m pip install --upgrade pip
+          pip install -e ".[dev]"
+
+      - name: Run black
+        shell: bash
+        run: black taskiq_faststream
+
+      - name: Run mypy
+        shell: bash
+        run: mypy taskiq_faststream
+
+      - name: Run ruff
+        shell: bash
+        run: ruff taskiq_faststream
+
+  test:
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        py_version: ["3.8", "3.9", "3.10", "3.11"]
-        os: [ubuntu-latest, windows-latest]
-    runs-on: "${{ matrix.os }}"
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
+        pydantic-version: ["pydantic-v1", "pydantic-v2"]
+      fail-fast: false
+
     steps:
       - uses: actions/checkout@v4
-      - name: Install poetry
-        run: pipx install poetry
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "${{ matrix.py_version }}"
-          cache: "poetry"
-      - name: Install deps
-        run: poetry install
-      - name: Run pytest check
-        run: poetry run pytest -vv -n auto --cov="taskiq_faststream" .
-      - name: Generate report
-        run: poetry run coverage xml
-      - name: Upload coverage reports to Codecov with GitHub Action
-        uses: codecov/codecov-action@v3
-        if: matrix.os == 'ubuntu-latest' && matrix.py_version == '3.9'
+          python-version: ${{ matrix.python-version }}
+      - uses: actions/cache@v3
+        id: cache
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          fail_ci_if_error: false
-          verbose: true
+          path: ${{ env.pythonLocation }}
+          key: ${{ runner.os }}-python-${{ env.pythonLocation }}-${{ hashFiles('pyproject.toml') }}-test-v03
+      - name: Install Dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: pip install -e .[test]
+      - name: Install Pydantic v1
+        if: matrix.pydantic-version == 'pydantic-v1'
+        run: pip install "pydantic>=1.10,<2"
+      - name: Install Pydantic v2
+        if: matrix.pydantic-version == 'pydantic-v2'
+        run: pip install --pre "pydantic>=2,<3"
+      - run: mkdir coverage
+      - name: Test
+        run: bash scripts/test.sh
+        env:
+          COVERAGE_FILE: coverage/.coverage.${{ runner.os }}-py${{ matrix.python-version }}
+          CONTEXT: ${{ runner.os }}-py${{ matrix.python-version }}
+      - name: Store coverage files
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage
+          path: coverage
+
+  coverage-combine:
+    needs: [test]
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.8'
+
+      - name: Get coverage files
+        uses: actions/download-artifact@v3
+        with:
+          name: coverage
+          path: coverage
+
+      - run: pip install coverage[toml]
+
+      - run: ls -la coverage
+      - run: coverage combine coverage
+      - run: coverage report
+      - run: coverage html --show-contexts --title "taskiq-faststream coverage for ${{ github.sha }}"
+
+      - name: Store coverage html
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-html
+          path: htmlcov
+
+  # https://github.com/marketplace/actions/alls-green#why
+  check:  # This job does nothing and is only used for the branch protection
+    if: github.event.pull_request.draft == false
+
+    needs:
+      - coverage-combine
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Decide whether the needed jobs succeeded or failed
+        uses: re-actors/alls-green@release/v1
+        with:
+          jobs: ${{ toJSON(needs) }}
