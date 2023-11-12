@@ -1,13 +1,12 @@
 name: Release python package
 
 on:
-  workflow_run:
-    workflows: [Test]
-    types: [completed]
+  push:
+    tags:
+      - "*"
 
 jobs:
   publish:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
 
     steps:
