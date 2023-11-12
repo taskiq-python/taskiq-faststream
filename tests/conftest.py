@@ -1,4 +1,4 @@
-from asyncio import Event
+import asyncio
 from unittest.mock import MagicMock
 from uuid import uuid4
 
@@ -27,5 +27,6 @@ def mock() -> MagicMock:
 
 
 @pytest.fixture()
-def event() -> Event:
-    return Event()
+@pytest.mark.anyio
+async def event() -> asyncio.Event:
+    return asyncio.Event()
