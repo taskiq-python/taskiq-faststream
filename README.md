@@ -10,7 +10,6 @@
     <a href="https://pepy.tech/project/taskiq-faststream" target="_blank">
         <img src="https://static.pepy.tech/personalized-badge/taskiq-faststream?period=month&units=international_system&left_color=grey&right_color=blue" alt="downloads"/>
     </a>
-    <br/>
     <a href="https://pypi.org/project/taskiq-faststream" target="_blank">
         <img src="https://img.shields.io/pypi/pyversions/taskiq-faststream.svg" alt="Supported Python versions">
     </a>
