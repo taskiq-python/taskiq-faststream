@@ -16,27 +16,10 @@ repos:
 
   - repo: local
     hooks:
-      - id: black
-        name: Format with Black
-        entry: poetry run black
-        language: system
+      - id: lint
+        name: Linter
+        entry: "bash scripts/lint.sh"
+        language: python
         types: [python]
-
-      - id: mypy
-        name: Validate types with MyPy
-        entry: poetry run mypy
-        language: system
-        types: [python]
-        pass_filenames: false
-        args: [taskiq_faststream]
-
-      - id: ruff
-        name: Run ruff lints
-        entry: poetry run ruff
-        language: system
-        pass_filenames: false
-        types: [python]
-        args:
-          - "--fix"
-          - "taskiq_faststream"
-          - "tests"
+        require_serial: true
+        verbose: true

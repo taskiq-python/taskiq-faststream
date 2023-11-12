@@ -1,13 +1,23 @@
-[tool.poetry]
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
 name = "taskiq-faststream"
-description = ""
-authors = ["Taskiq team <taskiq@no-reply.com>"]
-maintainers = ["Taskiq team <taskiq@no-reply.com>"]
-version = "0.1.0"
+description = "FastStream - taskiq integration to schedule FastStream tasks"
 readme = "README.md"
-license = "LICENSE"
+authors = [
+    { name = "Taskiq team", email = "taskiq@no-reply.com" },
+    { name = "Pastukhov Nikita", email = "diementros@yandex.ru" },
+]
+
+keywords = ["taskiq", "tasks", "distributed", "async", "FastStream"]
+
+requires-python = ">=3.8"
+
 classifiers = [
-    "Typing :: Typed",
+    "Development Status :: 5 - Production/Stable",
+    "License :: OSI Approved :: MIT License",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3 :: Only",
@@ -15,32 +25,81 @@ classifiers = [
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
     "Operating System :: OS Independent",
-    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development",
     "Topic :: System :: Networking",
-    "Development Status :: 3 - Alpha",
+    "Typing :: Typed",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Information Technology",
+    "Framework :: Pydantic",
+    "Framework :: Pydantic :: 1",
+    "Framework :: Pydantic :: 2",
 ]
-keywords = ["taskiq", "tasks", "distributed", "async"]
-packages = [{ include = "taskiq_faststream" }]
 
-[tool.poetry.dependencies]
-python = "^3.8.1"
-taskiq = "^0"
+dynamic = ["version"]
 
-[tool.poetry.group.dev.dependencies]
-pytest = "^7.1.2"
-mypy = "^1"
-pre-commit = "^2.20.0"
-coverage = "^6.4.2"
-pytest-cov = "^3.0.0"
-mock = "^4.0.3"
-anyio = "^3.6.1"
-pytest-xdist = { version = "^2.5.0", extras = ["psutil"] }
-types-mock = "^4.0.15"
-black = "^23.1.0"
-ruff = "^0.1.5"
+dependencies = [
+    "taskiq>=0.10.0,<1.0.0",
+    "faststream>=0.2.12,<1.0.0",
+]
+
+[project.optional-dependencies]
+nats = [
+    "faststream[nats]"
+]
+
+rabbit = [
+    "faststream[rabbit]"
+]
+
+kafka = [
+    "faststream[kafka]"
+]
+
+# local dev
+test = [
+    "coverage[toml]>=7.2.0,<8.0.0",
+    "pytest==7.4.3",
+]
+
+dev = [
+    "taskiq-faststream[nats]",
+    "taskiq-faststream[rabbit]",
+    "taskiq-faststream[kafka]",
+    "taskiq-faststream[test]",
+
+    "mypy==1.6.1",
+    "black==23.11.0",
+    "isort==5.12.0",
+    "ruff==0.1.4",
+    "pyupgrade-directories==0.3.0",
+    "pre-commit==3.5.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/taskiq-python/taskiq-faststream"
+Tracker = "https://github.com/taskiq-python/taskiq-faststream/issues"
+Source = "https://github.com/taskiq-python/taskiq-faststream"
+
+[tool.hatch.metadata]
+allow-direct-references = true
+allow-ambiguous-features = true
+
+[tool.hatch.version]
+path = "taskiq_faststream/__about__.py"
+
+[tool.hatch.build]
+skip-excluded-dirs = true
+exclude = [
+    "/tests",
+    "/.github",
+]
 
 [tool.mypy]
+python_version = "3.8"
 strict = true
 ignore_missing_imports = true
 allow_subclassing_any = true
@@ -52,11 +111,16 @@ allow_untyped_decorators = true
 warn_return_any = false
 warn_unused_ignores = false
 
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+[tool.isort]
+profile = "black"
+known_third_party = ["faststream", "taskiq"]
 
 [tool.ruff]
+fix = true
+target-version = "py38"
+line-length = 88
+mccabe = { max-complexity = 10 }
+
 # List of enabled rulsets.
 # See https://docs.astral.sh/ruff/rules/ for more information.
 select = [
@@ -100,8 +164,6 @@ ignore = [
     "D106",    # Missing docstring in public nested class
 ]
 exclude = [".venv/"]
-mccabe = { max-complexity = 10 }
-line-length = 88
 
 [tool.ruff.per-file-ignores]
 "tests/*" = [
@@ -121,7 +183,52 @@ ignore-decorators = ["typing.overload"]
 allow-magic-value-types = ["int", "str", "float"]
 
 [tool.ruff.flake8-bugbear]
-extend-immutable-calls = [
-    "taskiq_dependencies.Depends",
-    "taskiq.TaskiqDepends",
+extend-immutable-calls = []
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = "-q"
+testpaths = [
+    "tests",
+]
+
+[tool.coverage.run]
+parallel = true
+branch = true
+concurrency = [
+    "multiprocessing",
+    "thread"
+]
+source = [
+    "taskiq_faststream",
+    "tests"
+]
+context = '${CONTEXT}'
+omit = [
+    "**/__init__.py",
+]
+
+[tool.coverage.report]
+show_missing = true
+skip_empty = true
+exclude_lines = [
+    ".*# pragma: no cover",
+    "if __name__ == .__main__.:",
+    "self.logger",
+    "def __repr__",
+    "lambda: None",
+    "from .*",
+    "import .*",
+    '@(abc\.)?abstractmethod',
+    "raise NotImplementedError",
+    'raise AssertionError',
+    'raise ValueError',
+    'logger\..*',
+    "pass",
+    '\.\.\.',
+]
+omit = [
+    '*/__about__.py',
+    '*/__main__.py',
+    '*/__init__.py',
 ]
