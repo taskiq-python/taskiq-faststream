@@ -1,3 +1,6 @@
-from taskiq_faststream.broker import BrokerWrapper
+from taskiq_faststream.broker import AppWrapper, BrokerWrapper
 
-__all__ = ("BrokerWrapper",)
+__all__ = (
+    "BrokerWrapper",
+    "AppWrapper",
+)

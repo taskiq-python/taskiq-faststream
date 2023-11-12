@@ -8,5 +8,5 @@ async def test_warning() -> None:
     broker = BrokerWrapper(None)
 
     with pytest.warns(RuntimeWarning):
-        async for _ in broker.listen():
+        async for _ in broker.listen():  # pragma: no branch
             break

@@ -2,6 +2,7 @@ import typing
 import warnings
 
 from faststream._compat import TypeAlias, override
+from faststream.app import FastStream
 from faststream.broker.core.asyncronous import BrokerAsyncUsecase
 from faststream.types import SendableMessage
 from taskiq import AsyncBroker, BrokerMessage
@@ -44,10 +45,7 @@ class BrokerWrapper(AsyncBroker):
 
     async def kick(self, message: BrokerMessage) -> None:
         """Call wrapped FastStream broker `publish` method."""
-        labels = message.labels
-        labels.pop("schedule", None)
-        msg = await resolve_msg(labels.pop("message", message.message))
-        await self.broker.publish(msg, **labels)
+        await _broker_publish(self.broker, message)
 
     async def listen(
         self,
@@ -90,3 +88,49 @@ class BrokerWrapper(AsyncBroker):
             schedule=schedule,
             **kwargs,
         )(lambda: None)
+
+
+class AppWrapper(BrokerWrapper):
+    """Wrap FastStream instance to taskiq compatible object.
+
+    Attributes:
+        app : FastStream instance.
+
+    Methods:
+        __init__ : Initializes the object.
+        startup : Startup wrapper FastStream.
+        shutdown : Shutdown wrapper FastStream.
+        kick : Call wrapped FastStream broker `publish` method.
+        task : Register FastStream scheduled task.
+    """
+
+    def __init__(self, app: FastStream) -> None:
+        super(BrokerWrapper, self).__init__()
+        self.app = app
+
+    async def startup(self) -> None:
+        """Startup wrapper FastStream broker."""
+        await super(BrokerWrapper, self).startup()
+        await self.app._startup()  # noqa: SLF001
+
+    async def shutdown(self) -> None:
+        """Shutdown wrapper FastStream broker."""
+        await self.app._shutdown()  # noqa: SLF001
+        await super(BrokerWrapper, self).shutdown()
+
+    async def kick(self, message: BrokerMessage) -> None:
+        """Call wrapped FastStream broker `publish` method."""
+        assert (  # noqa: S101
+            self.app.broker
+        ), "You should setup application broker firts"
+        await _broker_publish(self.app.broker, message)
+
+
+async def _broker_publish(
+    broker: BrokerAsyncUsecase[typing.Any, typing.Any],
+    message: BrokerMessage,
+) -> None:
+    labels = message.labels
+    labels.pop("schedule", None)
+    msg = await resolve_msg(labels.pop("message", message.message))
+    await broker.publish(msg, **labels)
