@@ -1,8 +1,8 @@
+import asyncio
 from unittest.mock import MagicMock
 from uuid import uuid4
 
 import pytest
-from anyio._backends._asyncio import Event
 
 
 @pytest.fixture(scope="session")
@@ -27,5 +27,6 @@ def mock() -> MagicMock:
 
 
 @pytest.fixture()
-def event() -> Event:
-    return Event()
+@pytest.mark.anyio
+async def event() -> asyncio.Event:
+    return asyncio.Event()
