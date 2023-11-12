@@ -1,6 +1,7 @@
 import typing
 import warnings
 
+import anyio
 from faststream._compat import TypeAlias, override
 from faststream.app import FastStream
 from faststream.broker.core.asyncronous import BrokerAsyncUsecase
@@ -23,8 +24,8 @@ class BrokerWrapper(AsyncBroker):
 
     Methods:
         __init__ : Initializes the object.
-        startup : Startup wrapper FastStream broker.
-        shutdown : Shutdown wrapper FastStream broker.
+        startup : Startup wrapped FastStream broker.
+        shutdown : Shutdown wrapped FastStream broker.
         kick : Call wrapped FastStream broker `publish` method.
         task : Register FastStream scheduled task.
     """
@@ -34,12 +35,12 @@ class BrokerWrapper(AsyncBroker):
         self.broker = broker
 
     async def startup(self) -> None:
-        """Startup wrapper FastStream broker."""
+        """Startup wrapped FastStream broker."""
         await super().startup()
         await self.broker.start()
 
     async def shutdown(self) -> None:
-        """Shutdown wrapper FastStream broker."""
+        """Shutdown wrapped FastStream broker."""
         await self.broker.close()
         await super().shutdown()
 
@@ -51,17 +52,17 @@ class BrokerWrapper(AsyncBroker):
         self,
     ) -> typing.AsyncGenerator[typing.Union[bytes, AckableMessage], None]:
         """Not supported method."""
-        warnings.warn(
-            message=(
-                f"{self.__class__.__name__} doesn't support `listen` method. "
-                "Please, use it only to register a task."
-            ),
-            category=RuntimeWarning,
-            stacklevel=1,
-        )
-
         while True:
+            warnings.warn(
+                message=(
+                    f"{self.__class__.__name__} doesn't support `listen` method. "
+                    "Please, use it only to register a task."
+                ),
+                category=RuntimeWarning,
+                stacklevel=1,
+            )
             yield b""
+            await anyio.sleep(60)
 
     @override
     def task(  # type: ignore[override]
@@ -98,8 +99,8 @@ class AppWrapper(BrokerWrapper):
 
     Methods:
         __init__ : Initializes the object.
-        startup : Startup wrapper FastStream.
-        shutdown : Shutdown wrapper FastStream.
+        startup : Startup wrapped FastStream.
+        shutdown : Shutdown wrapped FastStream.
         kick : Call wrapped FastStream broker `publish` method.
         task : Register FastStream scheduled task.
     """
@@ -109,12 +110,12 @@ class AppWrapper(BrokerWrapper):
         self.app = app
 
     async def startup(self) -> None:
-        """Startup wrapper FastStream broker."""
+        """Startup wrapped FastStream."""
         await super(BrokerWrapper, self).startup()
         await self.app._startup()  # noqa: SLF001
 
     async def shutdown(self) -> None:
-        """Shutdown wrapper FastStream broker."""
+        """Shutdown wrapped FastStream."""
         await self.app._shutdown()  # noqa: SLF001
         await super(BrokerWrapper, self).shutdown()
 
