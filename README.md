@@ -122,3 +122,17 @@ taskiq_broker.task(
     ...,
 )
 ```
+
+Also, you can send a multiple message by one task call just using generator message callback with `yield`
+
+```python
+async def collect_information_to_send():
+    """Sends 10 messages per task call."""
+    for i in range(10):
+        yield i
+
+taskiq_broker.task(
+    message=collect_information_to_send,
+    ...,
+)
+```
