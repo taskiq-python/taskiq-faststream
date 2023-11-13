@@ -133,5 +133,7 @@ async def _broker_publish(
 ) -> None:
     labels = message.labels
     labels.pop("schedule", None)
-    msg = await resolve_msg(labels.pop("message", message.message))
-    await broker.publish(msg, **labels)
+    async for msg in resolve_msg(
+        msg=labels.pop("message", message.message),
+    ):
+        await broker.publish(msg, **labels)

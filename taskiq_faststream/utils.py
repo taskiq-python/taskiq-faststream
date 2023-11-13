@@ -1,5 +1,6 @@
 import typing
 
+from fast_depends.utils import is_async_gen_callable, is_gen_callable
 from faststream.types import SendableMessage
 from faststream.utils.functions import to_async
 
@@ -10,8 +11,10 @@ async def resolve_msg(
         SendableMessage,
         typing.Callable[[], SendableMessage],
         typing.Callable[[], typing.Awaitable[SendableMessage]],
+        typing.Callable[[], typing.Iterator[SendableMessage]],
+        typing.Callable[[], typing.AsyncIterator[SendableMessage]],
     ],
-) -> SendableMessage:
+) -> typing.AsyncIterator[SendableMessage]:
     """Resolve message generation callback.
 
     Args:
@@ -21,9 +24,26 @@ async def resolve_msg(
         The message to send
     """
     if callable(msg):
-        get_msg = typing.cast(
-            typing.Callable[[], typing.Awaitable[SendableMessage]],
-            to_async(msg),
-        )
-        msg = await get_msg()
-    return msg
+        if is_async_gen_callable(msg):
+            async for i in typing.cast(
+                typing.Callable[[], typing.AsyncIterator[SendableMessage]],
+                msg,
+            )():
+                yield i
+
+        elif is_gen_callable(msg):
+            for i in typing.cast(
+                typing.Callable[[], typing.Iterator[SendableMessage]],
+                msg,
+            )():
+                yield i
+
+        else:
+            get_msg = typing.cast(
+                typing.Callable[[], typing.Awaitable[SendableMessage]],
+                to_async(msg),
+            )
+            yield await get_msg()
+
+    else:
+        yield msg

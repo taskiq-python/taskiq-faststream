@@ -71,7 +71,9 @@ taskiq_broker = BrokerWrapper(broker)
 # create periodic task
 taskiq_broker.task(
     message="Hi!",
-    subject="test-subject"
+    # If you are using RabbitBroker, then you need to replace subject with queue.
+    # If you are using KafkaBroker, then you need to replace subject with topic.
+    subject="test-subject",
     schedule=[{
         "cron": "* * * * *",
     }],
@@ -116,6 +118,20 @@ A little feature: instead of using a final `message` argument, you can set a mes
 ```python
 async def collect_information_to_send():
     return "Message to send"
+
+taskiq_broker.task(
+    message=collect_information_to_send,
+    ...,
+)
+```
+
+Also, you can send a multiple message by one task call just using generator message callback with `yield`
+
+```python
+async def collect_information_to_send():
+    """Sends 10 messages per task call."""
+    for i in range(10):
+        yield i
 
 taskiq_broker.task(
     message=collect_information_to_send,
