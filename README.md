@@ -71,7 +71,9 @@ taskiq_broker = BrokerWrapper(broker)
 # create periodic task
 taskiq_broker.task(
     message="Hi!",
-    subject="test-subject"
+    # If you are using rabbitmq, then you need to replace subject with queue. 
+    # If you are using kafka, then you need to replace subject with topic.
+    subject="test-subject",
     schedule=[{
         "cron": "* * * * *",
     }],
