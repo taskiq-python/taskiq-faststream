@@ -61,9 +61,8 @@ async def handler(msg: str):
     print(msg)
 
 # taskiq-faststream scheduling
-from taskiq import TaskiqScheduler
 from taskiq.schedule_sources import LabelScheduleSource
-from taskiq_faststream import BrokerWrapper
+from taskiq_faststream import BrokerWrapper, StreamScheduler
 
 # wrap FastStream object
 taskiq_broker = BrokerWrapper(broker)
@@ -80,7 +79,7 @@ taskiq_broker.task(
 )
 
 # create scheduler object
-scheduler = TaskiqScheduler(
+scheduler = StreamScheduler(
     broker=taskiq_broker,
     sources=[LabelScheduleSource(taskiq_broker)],
 )
