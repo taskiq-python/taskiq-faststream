@@ -10,6 +10,7 @@ from taskiq import AsyncBroker, BrokerMessage
 from taskiq.acks import AckableMessage
 from taskiq.decor import AsyncTaskiqDecoratedTask
 
+from taskiq_faststream.serializer import PatchedSerializer
 from taskiq_faststream.types import ScheduledTask
 from taskiq_faststream.utils import resolve_msg
 
@@ -32,6 +33,7 @@ class BrokerWrapper(AsyncBroker):
 
     def __init__(self, broker: BrokerAsyncUsecase[typing.Any, typing.Any]) -> None:
         super().__init__()
+        self.serializer = PatchedSerializer()
         self.broker = broker
 
     async def startup(self) -> None:
@@ -107,6 +109,7 @@ class AppWrapper(BrokerWrapper):
 
     def __init__(self, app: FastStream) -> None:
         super(BrokerWrapper, self).__init__()
+        self.serializer = PatchedSerializer()
         self.app = app
 
     async def startup(self) -> None:
