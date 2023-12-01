@@ -8,8 +8,8 @@ from faststream.broker.core.asyncronous import BrokerAsyncUsecase
 from faststream.types import SendableMessage
 from taskiq import AsyncBroker, BrokerMessage
 from taskiq.acks import AckableMessage
-from taskiq.decor import AsyncTaskiqDecoratedTask
 
+from taskiq_faststream.task import PatchedTaskiqDecoratedTask
 from taskiq_faststream.types import ScheduledTask
 from taskiq_faststream.utils import resolve_msg
 
@@ -33,6 +33,7 @@ class BrokerWrapper(AsyncBroker):
     def __init__(self, broker: BrokerAsyncUsecase[typing.Any, typing.Any]) -> None:
         super().__init__()
         self.broker = broker
+        self.decorator_class = PatchedTaskiqDecoratedTask
 
     async def startup(self) -> None:
         """Startup wrapped FastStream broker."""
@@ -76,7 +77,7 @@ class BrokerWrapper(AsyncBroker):
         *,
         schedule: typing.List[ScheduledTask],
         **kwargs: PublishParameters,
-    ) -> "AsyncTaskiqDecoratedTask[[], None]":
+    ) -> "PatchedTaskiqDecoratedTask[[], None]":
         """Register FastStream scheduled task.
 
         Args:
@@ -108,6 +109,7 @@ class AppWrapper(BrokerWrapper):
     def __init__(self, app: FastStream) -> None:
         super(BrokerWrapper, self).__init__()
         self.app = app
+        self.decorator_class = PatchedTaskiqDecoratedTask
 
     async def startup(self) -> None:
         """Startup wrapped FastStream."""
