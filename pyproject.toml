@@ -25,6 +25,7 @@ classifiers = [
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
     "Operating System :: OS Independent",
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Topic :: Software Development :: Libraries",
@@ -42,7 +43,7 @@ dynamic = ["version"]
 
 dependencies = [
     "taskiq>=0.10.0,<1.0.0",
-    "faststream>=0.2.12,<1.0.0",
+    "faststream>=0.3.0,<1.0.0",
 ]
 
 [project.optional-dependencies]
@@ -58,25 +59,27 @@ kafka = [
     "faststream[kafka]"
 ]
 
+redis = [
+    "faststream[redis]"
+]
+
 # local dev
 test = [
     "taskiq-faststream[nats]",
     "taskiq-faststream[rabbit]",
     "taskiq-faststream[kafka]",
+    "taskiq-faststream[redis]",
 
     "coverage[toml]>=7.2.0,<8.0.0",
-    "pytest==7.4.3",
+    "pytest>=7.4.0,<8",
 ]
 
 dev = [
     "taskiq-faststream[test]",
 
-    "mypy==1.7.1",
-    "black==23.11.0",
-    "isort==5.12.0",
-    "ruff==0.1.6",
-    "pyupgrade-directories==0.3.0",
-    "pre-commit==3.5.0",
+    "mypy>=1.8.0,<1.9.0",
+    "ruff==0.1.11",
+    "pre-commit >=3.6.0,<4.0.0",
 ]
 
 [project.urls]
@@ -139,6 +142,8 @@ select = [
     "ISC", # Implicit string concat
     "PIE", # Unnecessary code
     "T20", # Catch prints
+    "UP",  # pyupgrade
+    "PERF",# perfomance checks
     "PYI", # validate pyi files
     "Q",   # Checks for quotes
     "RSE", # Checks raise statements
@@ -162,6 +167,8 @@ ignore = [
     "ANN401",  # typing.Any are disallowed in `**kwargs
     "PLR0913", # Too many arguments for function call
     "D106",    # Missing docstring in public nested class
+    "COM812",
+    "ISC001",
 ]
 exclude = [".venv/"]
 
@@ -211,8 +218,7 @@ omit = [
 [tool.coverage.report]
 show_missing = true
 skip_empty = true
-exclude_lines = [
-    ".*# pragma: no cover",
+exclude_also = [
     "if __name__ == .__main__.:",
     "self.logger",
     "def __repr__",
