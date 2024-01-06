@@ -1,6 +1,7 @@
 name: Release python package
 
 on:
+  workflow_dispatch: null
   push:
     tags:
       - "*"
