@@ -4,7 +4,7 @@ from typing import Any
 from unittest.mock import MagicMock
 
 import pytest
-from faststream.broker.core.asyncronous import BrokerAsyncUsecase
+from faststream.broker.core.asynchronous import BrokerAsyncUsecase
 from faststream.utils.functions import timeout_scope
 from taskiq import AsyncBroker, TaskiqScheduler
 from taskiq.cli.scheduler.args import SchedulerArgs
