@@ -2,13 +2,13 @@ import typing
 import warnings
 
 import anyio
-from faststream._compat import TypeAlias, override
 from faststream.app import FastStream
-from faststream.broker.core.asyncronous import BrokerAsyncUsecase
+from faststream.broker.core.asynchronous import BrokerAsyncUsecase
 from faststream.types import SendableMessage
 from taskiq import AsyncBroker, BrokerMessage
 from taskiq.acks import AckableMessage
 from taskiq.decor import AsyncTaskiqDecoratedTask
+from typing_extensions import TypeAlias, override
 
 from taskiq_faststream.serializer import PatchedSerializer
 from taskiq_faststream.types import ScheduledTask

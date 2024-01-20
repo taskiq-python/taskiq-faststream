@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from typing import Optional, Union
 
-from faststream._compat import TypedDict
+from typing_extensions import TypedDict
 
 
 class ScheduledTask(TypedDict, total=False):
