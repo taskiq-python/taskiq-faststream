@@ -71,7 +71,7 @@ test = [
     "taskiq-faststream[redis]",
 
     "coverage[toml]>=7.2.0,<8.0.0",
-    "pytest>=7.4.0,<8",
+    "pytest>=7.4.0,<9",
 ]
 
 dev = [
