@@ -8,7 +8,7 @@ description = "FastStream - taskiq integration to schedule FastStream tasks"
 readme = "README.md"
 authors = [
     { name = "Taskiq team", email = "taskiq@no-reply.com" },
-    { name = "Pastukhov Nikita", email = "diementros@yandex.ru" },
+    { name = "Nikita Pastukhov", email = "nikita@pastukhov-dev.com" },
 ]
 
 keywords = ["taskiq", "tasks", "distributed", "async", "FastStream"]
