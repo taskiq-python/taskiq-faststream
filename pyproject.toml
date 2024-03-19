@@ -77,7 +77,7 @@ test = [
 dev = [
     "taskiq-faststream[test]",
 
-    "mypy>=1.8.0,<1.9.0",
+    "mypy>=1.8.0,<1.10.0",
     "ruff==0.3.3",
     "pre-commit >=3.6.0,<4.0.0",
 ]
