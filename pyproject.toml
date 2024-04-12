@@ -8,7 +8,7 @@ description = "FastStream - taskiq integration to schedule FastStream tasks"
 readme = "README.md"
 authors = [
     { name = "Taskiq team", email = "taskiq@no-reply.com" },
-    { name = "Pastukhov Nikita", email = "diementros@yandex.ru" },
+    { name = "Nikita Pastukhov", email = "nikita@pastukhov-dev.com" },
 ]
 
 keywords = ["taskiq", "tasks", "distributed", "async", "FastStream"]
@@ -78,7 +78,7 @@ dev = [
     "taskiq-faststream[test]",
 
     "mypy>=1.8.0,<1.10.0",
-    "ruff==0.3.3",
+    "ruff==0.3.5",
     "pre-commit >=3.6.0,<4.0.0",
 ]
 
