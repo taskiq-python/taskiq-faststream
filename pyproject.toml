@@ -43,7 +43,7 @@ dynamic = ["version"]
 
 dependencies = [
     "taskiq>=0.10.0,<1.0.0",
-    "faststream>=0.3.14,<0.5.0",
+    "faststream>=0.5.1",
 ]
 
 [project.optional-dependencies]
