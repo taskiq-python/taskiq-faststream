@@ -8,7 +8,7 @@ description = "FastStream - taskiq integration to schedule FastStream tasks"
 readme = "README.md"
 authors = [
     { name = "Taskiq team", email = "taskiq@no-reply.com" },
-    { name = "Pastukhov Nikita", email = "diementros@yandex.ru" },
+    { name = "Nikita Pastukhov", email = "nikita@pastukhov-dev.com" },
 ]
 
 keywords = ["taskiq", "tasks", "distributed", "async", "FastStream"]
@@ -43,7 +43,7 @@ dynamic = ["version"]
 
 dependencies = [
     "taskiq>=0.10.0,<1.0.0",
-    "faststream>=0.3.14,<0.5.0",
+    "faststream>=0.3.14,<0.6.0",
 ]
 
 [project.optional-dependencies]
@@ -71,14 +71,14 @@ test = [
     "taskiq-faststream[redis]",
 
     "coverage[toml]>=7.2.0,<8.0.0",
-    "pytest>=7.4.0,<8",
+    "pytest>=7.4.0,<9",
 ]
 
 dev = [
     "taskiq-faststream[test]",
 
-    "mypy>=1.8.0,<1.9.0",
-    "ruff==0.1.13",
+    "mypy>=1.8.0,<1.10.0",
+    "ruff==0.4.1",
     "pre-commit >=3.6.0,<4.0.0",
 ]
 

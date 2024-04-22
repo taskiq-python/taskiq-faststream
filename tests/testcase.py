@@ -4,7 +4,6 @@ from typing import Any
 from unittest.mock import MagicMock
 
 import pytest
-from faststream.broker.core.asynchronous import BrokerAsyncUsecase
 from faststream.utils.functions import timeout_scope
 from taskiq import AsyncBroker, TaskiqScheduler
 from taskiq.cli.scheduler.args import SchedulerArgs
@@ -20,14 +19,14 @@ class SchedulerTestcase:
     subj_name: str
 
     @staticmethod
-    def build_taskiq_broker(broker: BrokerAsyncUsecase[Any, Any]) -> AsyncBroker:
+    def build_taskiq_broker(broker: Any) -> AsyncBroker:
         """Build Taskiq compatible object."""
         return BrokerWrapper(broker)
 
     async def test_task(
         self,
         subject: str,
-        broker: BrokerAsyncUsecase[Any, Any],
+        broker: Any,
         mock: MagicMock,
         event: asyncio.Event,
     ) -> None:
