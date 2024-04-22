@@ -1,9 +1,9 @@
 import typing
 import warnings
+from typing import Any
 
 import anyio
 from faststream.app import FastStream
-from faststream.broker.core.asynchronous import BrokerAsyncUsecase
 from faststream.types import SendableMessage
 from taskiq import AsyncBroker, BrokerMessage
 from taskiq.acks import AckableMessage
@@ -31,7 +31,7 @@ class BrokerWrapper(AsyncBroker):
         task : Register FastStream scheduled task.
     """
 
-    def __init__(self, broker: BrokerAsyncUsecase[typing.Any, typing.Any]) -> None:
+    def __init__(self, broker: Any) -> None:
         super().__init__()
         self.serializer = PatchedSerializer()
         self.broker = broker
@@ -131,7 +131,7 @@ class AppWrapper(BrokerWrapper):
 
 
 async def _broker_publish(
-    broker: BrokerAsyncUsecase[typing.Any, typing.Any],
+    broker: Any,
     message: BrokerMessage,
 ) -> None:
     labels = message.labels
