@@ -27,6 +27,5 @@ def mock() -> MagicMock:
 
 
 @pytest.fixture()
-@pytest.mark.anyio
 async def event() -> asyncio.Event:
     return asyncio.Event()

@@ -44,7 +44,7 @@ class SchedulerTestcase:
             **{self.subj_name: subject},
             schedule=[
                 {
-                    "time": datetime.utcnow(),
+                    "time": datetime.utcnow(),  # old python compat
                 },
             ],
         )

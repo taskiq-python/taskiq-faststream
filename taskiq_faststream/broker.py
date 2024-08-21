@@ -5,12 +5,12 @@ from typing import Any
 import anyio
 from faststream.app import FastStream
 from faststream.types import SendableMessage
-from taskiq import AsyncBroker, BrokerMessage
+from taskiq import AsyncBroker
 from taskiq.acks import AckableMessage
 from taskiq.decor import AsyncTaskiqDecoratedTask
 from typing_extensions import TypeAlias, override
 
-from taskiq_faststream.serializer import PatchedSerializer
+from taskiq_faststream.formatter import PatchedFormatter, PathcedMessage
 from taskiq_faststream.types import ScheduledTask
 from taskiq_faststream.utils import resolve_msg
 
@@ -33,7 +33,7 @@ class BrokerWrapper(AsyncBroker):
 
     def __init__(self, broker: Any) -> None:
         super().__init__()
-        self.serializer = PatchedSerializer()
+        self.formatter = PatchedFormatter()
         self.broker = broker
 
     async def startup(self) -> None:
@@ -46,7 +46,7 @@ class BrokerWrapper(AsyncBroker):
         await self.broker.close()
         await super().shutdown()
 
-    async def kick(self, message: BrokerMessage) -> None:
+    async def kick(self, message: PathcedMessage) -> None:  # type: ignore[override]
         """Call wrapped FastStream broker `publish` method."""
         await _broker_publish(self.broker, message)
 
@@ -109,7 +109,7 @@ class AppWrapper(BrokerWrapper):
 
     def __init__(self, app: FastStream) -> None:
         super(BrokerWrapper, self).__init__()
-        self.serializer = PatchedSerializer()
+        self.formatter = PatchedFormatter()
         self.app = app
 
     async def startup(self) -> None:
@@ -122,7 +122,7 @@ class AppWrapper(BrokerWrapper):
         await self.app._shutdown()  # noqa: SLF001
         await super(BrokerWrapper, self).shutdown()
 
-    async def kick(self, message: BrokerMessage) -> None:
+    async def kick(self, message: PathcedMessage) -> None:  # type: ignore[override]
         """Call wrapped FastStream broker `publish` method."""
         assert (  # noqa: S101
             self.app.broker
@@ -132,11 +132,7 @@ class AppWrapper(BrokerWrapper):
 
 async def _broker_publish(
     broker: Any,
-    message: BrokerMessage,
+    message: PathcedMessage,
 ) -> None:
-    labels = message.labels
-    labels.pop("schedule", None)
-    async for msg in resolve_msg(
-        msg=labels.pop("message", message.message),
-    ):
-        await broker.publish(msg, **labels)
+    async for msg in resolve_msg(message.body):
+        await broker.publish(msg, **message.labels)
