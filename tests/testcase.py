@@ -1,5 +1,5 @@
 import asyncio
-from datetime import datetime
+import datetime
 from typing import Any
 from unittest.mock import MagicMock
 
@@ -44,7 +44,7 @@ class SchedulerTestcase:
             **{self.subj_name: subject},
             schedule=[
                 {
-                    "time": datetime.utcnow(),
+                    "time": datetime.datetime.now(datetime.UTC),
                 },
             ],
         )
