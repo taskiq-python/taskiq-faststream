@@ -1,3 +1,5 @@
+uv.lock
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -142,6 +144,8 @@ venv.bak/
 .mypy_cache/
 .dmypy.json
 dmypy.json
+
+.ruff_cache/
 
 # Pyre type checker
 .pyre/

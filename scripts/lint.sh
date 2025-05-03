@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo "Running ruff..."
-ruff taskiq_faststream tests --fix
+ruff check taskiq_faststream tests --fix
 
 echo "Running ruff formatter..."
 ruff format taskiq_faststream tests
