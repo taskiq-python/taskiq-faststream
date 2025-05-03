@@ -5,7 +5,10 @@ on:
     branches:
       - master
   pull_request:
-    types: [opened, synchronize]
+    types:
+      - opened
+      - synchronize
+      - ready_for_review
 
 jobs:
   static_analysis:
