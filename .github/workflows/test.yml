@@ -72,6 +72,7 @@ jobs:
           name: .coverage.${{ runner.os }}-py${{ matrix.python-version }}-${{ matrix.pydantic-version }}
           path: coverage
           if-no-files-found: error
+          include-hidden-files: true
 
   coverage-combine:
     needs: [test]
@@ -103,6 +104,8 @@ jobs:
         with:
           name: coverage-html
           path: htmlcov
+          if-no-files-found: error
+          include-hidden-files: true
 
   # https://github.com/marketplace/actions/alls-green#why
   check:  # This job does nothing and is only used for the branch protection
