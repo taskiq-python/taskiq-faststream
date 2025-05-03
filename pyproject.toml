@@ -82,9 +82,9 @@ test = [
 dev = [
     "taskiq-faststream[test]",
 
-    "mypy>=1.8.0,<1.12.0",
-    "ruff==0.4.1",
-    "pre-commit >=3.6.0,<4.0.0",
+    "mypy>=1.8.0,<1.16.0",
+    "ruff==0.11.8",
+    "pre-commit >=3.6.0,<5.0.0",
 ]
 
 [project.urls]
