@@ -3,12 +3,12 @@ import warnings
 from typing import Any
 
 import anyio
-from faststream.app import FastStream
+from faststream._internal.application import Application
 from faststream.types import SendableMessage
 from taskiq import AsyncBroker
 from taskiq.acks import AckableMessage
 from taskiq.decor import AsyncTaskiqDecoratedTask
-from typing_extensions import TypeAlias, override
+from typing_extensions import TypeAlias
 
 from taskiq_faststream.formatter import PatchedFormatter, PathcedMessage
 from taskiq_faststream.types import ScheduledTask
@@ -66,7 +66,6 @@ class BrokerWrapper(AsyncBroker):
             yield b""
             await anyio.sleep(60)
 
-    @override
     def task(  # type: ignore[override]
         self,
         message: typing.Union[
@@ -76,7 +75,7 @@ class BrokerWrapper(AsyncBroker):
             typing.Callable[[], typing.Awaitable[SendableMessage]],
         ] = None,
         *,
-        schedule: typing.List[ScheduledTask],
+        schedule: list[ScheduledTask],
         **kwargs: PublishParameters,
     ) -> "AsyncTaskiqDecoratedTask[[], None]":
         """Register FastStream scheduled task.
@@ -107,7 +106,7 @@ class AppWrapper(BrokerWrapper):
         task : Register FastStream scheduled task.
     """
 
-    def __init__(self, app: FastStream) -> None:
+    def __init__(self, app: Application) -> None:
         super(BrokerWrapper, self).__init__()
         self.formatter = PatchedFormatter()
         self.app = app
