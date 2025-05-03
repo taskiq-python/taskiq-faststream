@@ -20,17 +20,10 @@ jobs:
         with:
           python-version: 3.13
 
-      - uses: actions/cache@v4
-        id: cache
-        with:
-          path: ${{ env.pythonLocation }}
-          key: ${{ runner.os }}-static-analysis-${{ hashFiles('pyproject.toml') }}-test-v03
       - uses: astral-sh/setup-uv@v6
-        if: steps.cache.outputs.cache-hit != 'true'
         with:
           version: "latest"
       - name: Install Dependencies
-        if: steps.cache.outputs.cache-hit != 'true'
         run: uv pip install --system ".[dev]"
 
       - name: Run formatter
@@ -58,17 +51,10 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - uses: actions/cache@v4
-        id: cache
-        with:
-          path: ${{ env.pythonLocation }}
-          key: ${{ runner.os }}-python-${{ env.pythonLocation }}-${{ hashFiles('pyproject.toml') }}-test-v03
       - uses: astral-sh/setup-uv@v6
-        if: steps.cache.outputs.cache-hit != 'true'
         with:
           version: "latest"
       - name: Install Dependencies
-        if: steps.cache.outputs.cache-hit != 'true'
         run: uv pip install --system ".[test]"
 
       - run: mkdir coverage
