@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Any, Dict
+from typing import Any
 
 from taskiq.abc.formatter import TaskiqFormatter
 from taskiq.message import TaskiqMessage
@@ -10,7 +10,7 @@ class PathcedMessage:
     """DTO to transfer data to `broker.kick`."""
 
     body: Any
-    labels: Dict[str, Any]
+    labels: dict[str, Any]
 
 
 class PatchedFormatter(TaskiqFormatter):
