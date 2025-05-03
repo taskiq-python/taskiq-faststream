@@ -40,6 +40,8 @@ pip install taskiq-faststream[rabbit]
 pip install taskiq-faststream[kafka]
 # or
 pip install taskiq-faststream[nats]
+# or
+pip install taskiq-faststream[redis]
 ```
 
 ## Usage
