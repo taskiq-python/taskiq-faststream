@@ -39,8 +39,9 @@ jobs:
         run: python -m build
 
       - name: Publish
-        uses: pypa/gh-action-pypi-publish@v1.9.0
+        uses: pypa/gh-action-pypi-publish@release/v1
         with:
+          password: ${{ secrets.PYPI_TOKEN }}
           skip-existing: true
 
       - name: Dump GitHub context
