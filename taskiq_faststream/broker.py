@@ -3,7 +3,7 @@ import warnings
 from typing import Any
 
 import anyio
-from faststream.app import FastStream
+from faststream._internal.application import Application
 from faststream.types import SendableMessage
 from taskiq import AsyncBroker
 from taskiq.acks import AckableMessage
@@ -66,7 +66,7 @@ class BrokerWrapper(AsyncBroker):
             yield b""
             await anyio.sleep(60)
 
-    def task(
+    def task(  # type: ignore[override]
         self,
         message: typing.Union[
             None,
@@ -106,7 +106,7 @@ class AppWrapper(BrokerWrapper):
         task : Register FastStream scheduled task.
     """
 
-    def __init__(self, app: FastStream) -> None:
+    def __init__(self, app: Application) -> None:
         super(BrokerWrapper, self).__init__()
         self.formatter = PatchedFormatter()
         self.app = app

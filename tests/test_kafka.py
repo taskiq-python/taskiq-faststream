@@ -23,3 +23,10 @@ class TestApp(TestBroker):
     def build_taskiq_broker(broker: KafkaBroker) -> AsyncBroker:
         """Build AppWrapper."""
         return AppWrapper(FastStream(broker))
+
+
+class TestAsgiApp(TestBroker):
+    @staticmethod
+    def build_taskiq_broker(broker: KafkaBroker) -> AsyncBroker:
+        """Build AppWrapper."""
+        return AppWrapper(FastStream(broker).as_asgi())
