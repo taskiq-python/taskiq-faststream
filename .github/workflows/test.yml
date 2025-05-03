@@ -19,24 +19,24 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: 3.9
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: "latest"
       - name: Install Dependencies and library
         shell: bash
-        run: |
-          set -ux
-          python -m pip install --upgrade pip
-          pip install -e ".[dev]"
+        run: uv pip install --system ".[dev]"
 
       - name: Run formatter
         shell: bash
         run: ruff format taskiq_faststream
 
+      - name: Run ruff
+        shell: bash
+        run: ruff check taskiq_faststream
+
       - name: Run mypy
         shell: bash
         run: mypy taskiq_faststream
-
-      - name: Run ruff
-        shell: bash
-        run: ruff taskiq_faststream
 
   test:
     if: github.event.pull_request.draft == false
@@ -52,6 +52,9 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: "latest"
       - uses: actions/cache@v4
         id: cache
         with:
@@ -59,7 +62,7 @@ jobs:
           key: ${{ runner.os }}-python-${{ env.pythonLocation }}-${{ hashFiles('pyproject.toml') }}-test-v03
       - name: Install Dependencies
         if: steps.cache.outputs.cache-hit != 'true'
-        run: pip install -e .[test]
+        run: uv pip install --system ".[test]"
       - run: mkdir coverage
       - name: Test
         run: bash scripts/test.sh
@@ -83,7 +86,11 @@ jobs:
 
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.8'
+          python-version: 3.9
+
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: "latest"
 
       - name: Get coverage files
         uses: actions/download-artifact@v4
@@ -92,7 +99,7 @@ jobs:
           path: coverage
           merge-multiple: true
 
-      - run: pip install coverage[toml]
+      - run: uv pip install --system "coverage[toml]"
 
       - run: ls -la coverage
       - run: coverage combine coverage
