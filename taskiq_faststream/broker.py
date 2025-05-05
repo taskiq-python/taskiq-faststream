@@ -73,6 +73,8 @@ class BrokerWrapper(AsyncBroker):
             SendableMessage,
             typing.Callable[[], SendableMessage],
             typing.Callable[[], typing.Awaitable[SendableMessage]],
+            typing.Callable[[], typing.Generator[SendableMessage]],
+            typing.Callable[[], typing.AsyncGenerator[SendableMessage]],
         ] = None,
         *,
         schedule: list[ScheduledTask],
