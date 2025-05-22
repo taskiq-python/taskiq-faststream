@@ -1,16 +1,17 @@
 import asyncio
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from typing import Any
 from unittest.mock import MagicMock
 
 import pytest
 from faststream.utils.functions import timeout_scope
+from freezegun import freeze_time
 from taskiq import AsyncBroker, TaskiqScheduler
 from taskiq.cli.scheduler.args import SchedulerArgs
 from taskiq.cli.scheduler.run import run_scheduler
 from taskiq.schedule_sources import LabelScheduleSource
 
-from taskiq_faststream import BrokerWrapper
+from taskiq_faststream import BrokerWrapper, StreamScheduler
 
 
 @pytest.mark.anyio
@@ -67,3 +68,52 @@ class SchedulerTestcase:
 
         mock.assert_called_once_with("Hi!")
         task.cancel()
+
+    async def test_task_multiple_schedules_by_cron(
+        self,
+        subject: str,
+        broker: Any,
+        event: asyncio.Event,
+    ) -> None:
+        """Test cron runs twice via StreamScheduler."""
+        received_message = []
+
+        @broker.subscriber(subject)
+        async def handler(msg: str) -> None:
+            received_message.append(msg)
+            event.set()
+
+        taskiq_broker = self.build_taskiq_broker(broker)
+
+        taskiq_broker.task(
+            "Hi!",
+            **{self.subj_name: subject},
+            schedule=[
+                {
+                    "cron": "* * * * *",
+                },
+            ],
+        )
+
+        async with self.test_class(broker):
+            with freeze_time("00:00:00", tick=True) as frozen_datetime:
+                task = asyncio.create_task(
+                    run_scheduler(
+                        SchedulerArgs(
+                            scheduler=StreamScheduler(
+                                broker=taskiq_broker,
+                                sources=[LabelScheduleSource(taskiq_broker)],
+                            ),
+                            modules=[],
+                        ),
+                    ),
+                )
+
+                await asyncio.wait_for(event.wait(), 2.0)
+                event.clear()
+                frozen_datetime.tick(timedelta(minutes=2))
+                await asyncio.wait_for(event.wait(), 2.0)
+
+            task.cancel()
+
+        assert received_message == ["Hi!", "Hi!"], received_message
