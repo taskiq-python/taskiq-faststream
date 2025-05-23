@@ -26,7 +26,7 @@ class PatchedFormatter(TaskiqFormatter):
         :param message: message to send.
         :return: Dumped message.
         """
-        labels = message.labels
+        labels = message.labels.copy()
         labels.pop("schedule", None)
         labels.pop("schedule_id", None)
 
