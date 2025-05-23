@@ -6,7 +6,7 @@ from taskiq.message import TaskiqMessage
 
 
 @dataclass
-class PathcedMessage:
+class PatchedMessage:
     """DTO to transfer data to `broker.kick`."""
 
     body: Any
@@ -19,7 +19,7 @@ class PatchedFormatter(TaskiqFormatter):
     def dumps(  # type: ignore[override]
         self,
         message: TaskiqMessage,
-    ) -> PathcedMessage:
+    ) -> PatchedMessage:
         """
         Dumps taskiq message to some broker message format.
 
@@ -30,7 +30,7 @@ class PatchedFormatter(TaskiqFormatter):
         labels.pop("schedule", None)
         labels.pop("schedule_id", None)
 
-        return PathcedMessage(
+        return PatchedMessage(
             body=labels.pop("message", None),
             labels=labels,
         )
