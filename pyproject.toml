@@ -1,6 +1,6 @@
 [project]
 name = "taskiq-faststream"
-version = "0.2.2"
+version = "0.2.3"
 description = "FastStream - taskiq integration to schedule FastStream tasks"
 readme = "README.md"
 authors = [
