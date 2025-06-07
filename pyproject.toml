@@ -1,6 +1,6 @@
 [project]
 name = "taskiq-faststream"
-version = "0.2.2"
+version = "0.2.3"
 description = "FastStream - taskiq integration to schedule FastStream tasks"
 readme = "README.md"
 authors = [
@@ -78,8 +78,8 @@ test = [
 
 dev = [
     "taskiq-faststream[test]",
-    "mypy==1.15.0",
-    "ruff==0.11.10",
+    "mypy==1.16.0",
+    "ruff==0.11.12",
     "pre-commit >=3.6.0,<5.0.0",
 ]
 

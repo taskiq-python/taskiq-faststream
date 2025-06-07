@@ -1,17 +1,20 @@
 import asyncio
+import typing
 from datetime import datetime, timedelta, timezone
 from typing import Any
 from unittest.mock import MagicMock
 
 import pytest
+from faststream.types import SendableMessage
 from faststream.utils.functions import timeout_scope
 from freezegun import freeze_time
-from taskiq import AsyncBroker, TaskiqScheduler
+from taskiq import AsyncBroker
 from taskiq.cli.scheduler.args import SchedulerArgs
 from taskiq.cli.scheduler.run import run_scheduler
 from taskiq.schedule_sources import LabelScheduleSource
 
 from taskiq_faststream import BrokerWrapper, StreamScheduler
+from tests import messages
 
 
 @pytest.mark.anyio
@@ -54,7 +57,7 @@ class SchedulerTestcase:
             task = asyncio.create_task(
                 run_scheduler(
                     SchedulerArgs(
-                        scheduler=TaskiqScheduler(
+                        scheduler=StreamScheduler(
                             broker=taskiq_broker,
                             sources=[LabelScheduleSource(taskiq_broker)],
                         ),
@@ -69,24 +72,44 @@ class SchedulerTestcase:
         mock.assert_called_once_with("Hi!")
         task.cancel()
 
+    @pytest.mark.parametrize(
+        "msg",
+        [
+            messages.message,  # regular msg
+            messages.sync_callable_msg,  # sync callable
+            messages.async_callable_msg,  # async callable
+            messages.sync_generator_msg,  # sync generator
+            messages.async_generator_msg,  # async generator
+            messages.sync_callable_class_message,  # sync callable class
+            messages.async_callable_class_message,  # async callable class
+        ],
+    )
     async def test_task_multiple_schedules_by_cron(
         self,
         subject: str,
         broker: Any,
         event: asyncio.Event,
+        msg: typing.Union[
+            None,
+            SendableMessage,
+            typing.Callable[[], SendableMessage],
+            typing.Callable[[], typing.Awaitable[SendableMessage]],
+            typing.Callable[[], typing.Generator[SendableMessage, None, None]],
+            typing.Callable[[], typing.AsyncGenerator[SendableMessage, None]],
+        ],
     ) -> None:
         """Test cron runs twice via StreamScheduler."""
         received_message = []
 
         @broker.subscriber(subject)
-        async def handler(msg: str) -> None:
-            received_message.append(msg)
+        async def handler(message: str) -> None:
+            received_message.append(message)
             event.set()
 
         taskiq_broker = self.build_taskiq_broker(broker)
 
         taskiq_broker.task(
-            "Hi!",
+            msg,
             **{self.subj_name: subject},
             schedule=[
                 {
@@ -116,4 +139,6 @@ class SchedulerTestcase:
 
             task.cancel()
 
-        assert received_message == ["Hi!", "Hi!"], received_message
+        assert received_message == [messages.message, messages.message], (
+            received_message
+        )
