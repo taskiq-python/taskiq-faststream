@@ -1,12 +1,12 @@
 import asyncio
 import typing
+import anyio
 from datetime import datetime, timedelta, timezone
-from typing import Any
+from typing import Any, Optional, ContextManager, Callable
 from unittest.mock import MagicMock
 
 import pytest
 from faststream.types import SendableMessage
-from faststream.utils.functions import timeout_scope
 from freezegun import freeze_time
 from taskiq import AsyncBroker
 from taskiq.cli.scheduler.args import SchedulerArgs
@@ -15,6 +15,16 @@ from taskiq.schedule_sources import LabelScheduleSource
 
 from taskiq_faststream import BrokerWrapper, StreamScheduler
 from tests import messages
+
+
+def timeout_scope(
+    timeout: Optional[float] = 30,
+    raise_timeout: bool = False,
+) -> ContextManager[anyio.CancelScope]:
+    scope: Callable[[Optional[float]], ContextManager[anyio.CancelScope]]
+    scope = anyio.fail_after if raise_timeout else anyio.move_on_after
+
+    return scope(timeout)
 
 
 @pytest.mark.anyio

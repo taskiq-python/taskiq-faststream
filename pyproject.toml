@@ -39,7 +39,7 @@ classifiers = [
 
 dependencies = [
     "taskiq>=0.11.0,<0.12.0",
-    "faststream>=0.3.14,<0.6.0",
+    "faststream>=0.6.0rc0",
 ]
 
 [project.optional-dependencies]
