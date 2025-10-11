@@ -16,23 +16,14 @@ jobs:
           GITHUB_CONTEXT: ${{ toJson(github) }}
         run: echo "$GITHUB_CONTEXT"
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: 3.13
-          cache: "pip"
-          cache-dependency-path: pyproject.toml
-
-      - uses: actions/cache@v4
-        id: cache
-        with:
-          path: ${{ env.pythonLocation }}
-          key: ${{ runner.os }}-python-${{ env.pythonLocation }}-${{ hashFiles('pyproject.toml') }}-publish
 
       - name: Install build dependencies
-        if: steps.cache.outputs.cache-hit != 'true'
         run: pip install build
 
       - name: Build distribution
@@ -41,7 +32,6 @@ jobs:
       - name: Publish
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
-          password: ${{ secrets.PYPI_TOKEN }}
           skip-existing: true
 
       - name: Dump GitHub context
