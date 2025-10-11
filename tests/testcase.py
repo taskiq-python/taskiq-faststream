@@ -3,8 +3,8 @@ from datetime import datetime, timezone
 from typing import Any
 from unittest.mock import MagicMock
 
+import anyio
 import pytest
-from faststream.utils.functions import timeout_scope
 from taskiq import AsyncBroker, TaskiqScheduler
 from taskiq.cli.scheduler.args import SchedulerArgs
 from taskiq.cli.scheduler.run import run_scheduler
@@ -62,7 +62,7 @@ class SchedulerTestcase:
                 ),
             )
 
-            with timeout_scope(3.0, True):
+            with anyio.fail_after(3.0):
                 await event.wait()
 
         mock.assert_called_once_with("Hi!")

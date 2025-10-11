@@ -2,7 +2,11 @@ import typing
 
 from fast_depends.utils import is_async_gen_callable, is_gen_callable
 from faststream.types import SendableMessage
-from faststream.utils.functions import to_async
+
+try:
+    from faststream.utils.functions import to_async
+except ImportError:
+    from faststream._internal.utils import to_async
 
 
 async def resolve_msg(
