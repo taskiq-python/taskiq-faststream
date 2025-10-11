@@ -24,7 +24,7 @@ jobs:
         with:
           version: "latest"
       - name: Install Dependencies
-        run: uv pip install --system ".[dev]"
+        run: uv pip install --system --group dev .
 
       - name: Run formatter
         shell: bash
@@ -55,7 +55,7 @@ jobs:
         with:
           version: "latest"
       - name: Install Dependencies
-        run: uv pip install --system ".[test]"
+        run: uv pip install --system --group test .
 
       - run: mkdir coverage
       - name: Test
