@@ -4,9 +4,9 @@ from datetime import datetime, timedelta, timezone
 from typing import Any
 from unittest.mock import MagicMock
 
+import anyio
 import pytest
 from faststream.types import SendableMessage
-from faststream.utils.functions import timeout_scope
 from freezegun import freeze_time
 from taskiq import AsyncBroker
 from taskiq.cli.scheduler.args import SchedulerArgs
@@ -66,7 +66,7 @@ class SchedulerTestcase:
                 ),
             )
 
-            with timeout_scope(3.0, True):
+            with anyio.fail_after(3.0):
                 await event.wait()
 
         mock.assert_called_once_with("Hi!")

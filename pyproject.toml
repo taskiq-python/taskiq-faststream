@@ -1,6 +1,6 @@
 [project]
 name = "taskiq-faststream"
-version = "0.2.3"
+version = "0.3.0"
 description = "FastStream - taskiq integration to schedule FastStream tasks"
 readme = "README.md"
 authors = [
@@ -10,7 +10,7 @@ authors = [
 
 keywords = ["taskiq", "tasks", "distributed", "async", "FastStream"]
 
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 
 classifiers = [
     "Development Status :: 5 - Production/Stable",
@@ -18,11 +18,11 @@ classifiers = [
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3 :: Only",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Operating System :: OS Independent",
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Topic :: Software Development :: Libraries",
@@ -63,7 +63,7 @@ redis = [
     "faststream[redis]"
 ]
 
-# local dev
+[dependency-groups]
 test = [
     "taskiq-faststream[nats]",
     "taskiq-faststream[rabbit]",
@@ -77,30 +77,23 @@ test = [
 ]
 
 dev = [
-    "taskiq-faststream[test]",
+    {include-group = "test"},
     "mypy==1.18.2",
     "ruff==0.13.2",
     "pre-commit >=3.6.0,<5.0.0",
 ]
 
+[build-system]
+requires = ["uv_build>=0.9.2"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-root = ""
+
 [project.urls]
 Homepage = "https://github.com/taskiq-python/taskiq-faststream"
 Tracker = "https://github.com/taskiq-python/taskiq-faststream/issues"
 Source = "https://github.com/taskiq-python/taskiq-faststream"
-
-[tool.hatch.metadata]
-allow-direct-references = true
-allow-ambiguous-features = true
-
-[tool.hatch.version]
-path = "taskiq_faststream/__about__.py"
-
-[tool.hatch.build]
-skip-excluded-dirs = true
-exclude = [
-    "/tests",
-    "/.github",
-]
 
 [tool.mypy]
 python_version = "3.9"
