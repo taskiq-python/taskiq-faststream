@@ -10,7 +10,7 @@ from taskiq.acks import AckableMessage
 from taskiq.decor import AsyncTaskiqDecoratedTask
 from typing_extensions import TypeAlias
 
-from taskiq_faststream.formatter import PatchedFormatter, PathcedMessage
+from taskiq_faststream.formatter import PatchedFormatter, PatchedMessage
 from taskiq_faststream.types import ScheduledTask
 from taskiq_faststream.utils import resolve_msg
 
@@ -46,7 +46,7 @@ class BrokerWrapper(AsyncBroker):
         await self.broker.close()
         await super().shutdown()
 
-    async def kick(self, message: PathcedMessage) -> None:  # type: ignore[override]
+    async def kick(self, message: PatchedMessage) -> None:  # type: ignore[override]
         """Call wrapped FastStream broker `publish` method."""
         await _broker_publish(self.broker, message)
 
@@ -73,6 +73,8 @@ class BrokerWrapper(AsyncBroker):
             SendableMessage,
             typing.Callable[[], SendableMessage],
             typing.Callable[[], typing.Awaitable[SendableMessage]],
+            typing.Callable[[], typing.Generator[SendableMessage, None, None]],
+            typing.Callable[[], typing.AsyncGenerator[SendableMessage, None]],
         ] = None,
         *,
         schedule: list[ScheduledTask],
@@ -121,7 +123,7 @@ class AppWrapper(BrokerWrapper):
         await self.app._shutdown()  # noqa: SLF001
         await super(BrokerWrapper, self).shutdown()
 
-    async def kick(self, message: PathcedMessage) -> None:  # type: ignore[override]
+    async def kick(self, message: PatchedMessage) -> None:  # type: ignore[override]
         """Call wrapped FastStream broker `publish` method."""
         assert (  # noqa: S101
             self.app.broker
@@ -131,7 +133,7 @@ class AppWrapper(BrokerWrapper):
 
 async def _broker_publish(
     broker: Any,
-    message: PathcedMessage,
+    message: PatchedMessage,
 ) -> None:
     async for msg in resolve_msg(message.body):
         await broker.publish(msg, **message.labels)

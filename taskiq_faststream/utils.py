@@ -6,7 +6,7 @@ from faststream.types import SendableMessage
 try:
     from faststream.utils.functions import to_async
 except ImportError:
-    from faststream._internal.utils import to_async
+    from faststream._internal.utils import to_async  # type: ignore[no-redef]
 
 
 async def resolve_msg(
