@@ -1,6 +1,6 @@
 import typing
 import warnings
-from typing import Any
+from typing import Any, TypeAlias
 
 import anyio
 from faststream._internal.application import Application
@@ -8,7 +8,6 @@ from faststream.types import SendableMessage
 from taskiq import AsyncBroker
 from taskiq.acks import AckableMessage
 from taskiq.decor import AsyncTaskiqDecoratedTask
-from typing_extensions import TypeAlias
 
 from taskiq_faststream.formatter import PatchedFormatter, PatchedMessage
 from taskiq_faststream.types import ScheduledTask
@@ -52,7 +51,7 @@ class BrokerWrapper(AsyncBroker):
 
     async def listen(
         self,
-    ) -> typing.AsyncGenerator[typing.Union[bytes, AckableMessage], None]:
+    ) -> typing.AsyncGenerator[bytes | AckableMessage, None]:
         """Not supported method."""
         while True:
             warnings.warn(
@@ -68,14 +67,12 @@ class BrokerWrapper(AsyncBroker):
 
     def task(  # type: ignore[override]
         self,
-        message: typing.Union[
-            None,
-            SendableMessage,
-            typing.Callable[[], SendableMessage],
-            typing.Callable[[], typing.Awaitable[SendableMessage]],
-            typing.Callable[[], typing.Generator[SendableMessage, None, None]],
-            typing.Callable[[], typing.AsyncGenerator[SendableMessage, None]],
-        ] = None,
+        message: None
+        | SendableMessage
+        | typing.Callable[[], SendableMessage]
+        | typing.Callable[[], typing.Awaitable[SendableMessage]]
+        | typing.Callable[[], typing.Generator[SendableMessage, None, None]]
+        | typing.Callable[[], typing.AsyncGenerator[SendableMessage, None]] = None,
         *,
         schedule: list[ScheduledTask],
         **kwargs: PublishParameters,

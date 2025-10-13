@@ -1,5 +1,4 @@
 from datetime import datetime, timedelta
-from typing import Optional, Union
 
 from typing_extensions import TypedDict
 
@@ -11,5 +10,5 @@ class ScheduledTask(TypedDict, total=False):
     """
 
     cron: str
-    cron_offset: Union[str, timedelta, None]
-    time: Optional[datetime]
+    cron_offset: str | timedelta | None
+    time: datetime | None
