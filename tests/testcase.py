@@ -89,14 +89,12 @@ class SchedulerTestcase:
         subject: str,
         broker: Any,
         event: asyncio.Event,
-        msg: typing.Union[
-            None,
-            SendableMessage,
-            typing.Callable[[], SendableMessage],
-            typing.Callable[[], typing.Awaitable[SendableMessage]],
-            typing.Callable[[], typing.Generator[SendableMessage, None, None]],
-            typing.Callable[[], typing.AsyncGenerator[SendableMessage, None]],
-        ],
+        msg: None
+        | SendableMessage
+        | typing.Callable[[], SendableMessage]
+        | typing.Callable[[], typing.Awaitable[SendableMessage]]
+        | typing.Callable[[], typing.Generator[SendableMessage, None, None]]
+        | typing.Callable[[], typing.AsyncGenerator[SendableMessage, None]],
     ) -> None:
         """Test cron runs twice via StreamScheduler."""
         received_message = []

@@ -21,14 +21,12 @@ from tests import messages
 )
 @pytest.mark.anyio
 async def test_resolve_msg(
-    msg: typing.Union[
-        None,
-        SendableMessage,
-        typing.Callable[[], SendableMessage],
-        typing.Callable[[], typing.Awaitable[SendableMessage]],
-        typing.Callable[[], typing.Generator[SendableMessage, None, None]],
-        typing.Callable[[], typing.AsyncGenerator[SendableMessage, None]],
-    ],
+    msg: None
+    | SendableMessage
+    | typing.Callable[[], SendableMessage]
+    | typing.Callable[[], typing.Awaitable[SendableMessage]]
+    | typing.Callable[[], typing.Generator[SendableMessage, None, None]]
+    | typing.Callable[[], typing.AsyncGenerator[SendableMessage, None]],
 ) -> None:
     async for m in resolve_msg(msg):
         assert m == messages.message
