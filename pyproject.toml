@@ -1,6 +1,6 @@
 [project]
 name = "taskiq-faststream"
-version = "0.3.0"
+version = "0.3.1"
 description = "FastStream - taskiq integration to schedule FastStream tasks"
 readme = "README.md"
 authors = [
@@ -39,7 +39,7 @@ classifiers = [
 
 dependencies = [
     "taskiq>=0.11.0,<0.12.0",
-    "faststream>=0.3.14,<=0.6.0",
+    "faststream>=0.3.14,<0.7",
 ]
 
 [project.optional-dependencies]
@@ -96,7 +96,7 @@ Tracker = "https://github.com/taskiq-python/taskiq-faststream/issues"
 Source = "https://github.com/taskiq-python/taskiq-faststream"
 
 [tool.mypy]
-python_version = "3.9"
+python_version = "3.10"
 strict = true
 ignore_missing_imports = true
 allow_subclassing_any = true
@@ -114,7 +114,7 @@ known_third_party = ["faststream", "taskiq"]
 
 [tool.ruff]
 fix = true
-target-version = "py39"
+target-version = "py310"
 line-length = 88
 
 [tool.ruff.lint]
