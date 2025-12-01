@@ -40,7 +40,7 @@ classifiers = [
 
 
 dependencies = [
-    "taskiq>=0.11.0,<0.12.0",
+    "taskiq>=0.11.0,<0.13.0",
     "faststream>=0.3.14,<0.7",
 ]
 
@@ -74,14 +74,14 @@ test = [
     "taskiq-faststream[redis]",
 
     "coverage[toml]>=7.2.0,<8.0.0",
-    "pytest>=7.4.0,<9",
+    "pytest>=7.4.0,<10",
     "freezegun>=1.2.2"
 ]
 
 dev = [
     {include-group = "test"},
-    "mypy==1.18.2",
-    "ruff==0.14.1",
+    "mypy==1.19.0",
+    "ruff==0.14.7",
     "pre-commit >=3.6.0,<5.0.0",
 ]
 
