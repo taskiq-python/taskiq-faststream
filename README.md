@@ -46,6 +46,12 @@ pip install taskiq-faststream[nats]
 pip install taskiq-faststream[redis]
 ```
 
+For **OpenTelemetry** distributed tracing support:
+
+```bash
+pip install taskiq-faststream[otel]
+```
+
 ## Usage
 
 The package gives you two classes: `AppWrapper` and `BrokerWrapper`
@@ -140,4 +146,40 @@ taskiq_broker.task(
     message=collect_information_to_send,
     ...,
 )
+```
+
+## OpenTelemetry Support
+
+**taskiq-faststream** supports taskiq's OpenTelemetry middleware. To enable it, pass `OpenTelemetryMiddleware` when creating the broker wrapper:
+
+```python
+from faststream.nats import NatsBroker
+from taskiq_faststream import BrokerWrapper
+from taskiq.middlewares.otel_middleware import OpenTelemetryMiddleware
+
+broker = NatsBroker()
+
+# Enable OpenTelemetry middleware
+taskiq_broker = BrokerWrapper(broker, middlewares=[OpenTelemetryMiddleware()])
+```
+
+This will automatically add OpenTelemetry middleware to track task execution, providing insights into:
+- Task execution spans
+- Task dependencies and call chains
+- Performance metrics
+- Error tracking
+
+Make sure to configure your OpenTelemetry exporter (e.g., Jaeger, Zipkin) according to your monitoring setup.
+
+The same applies to `AppWrapper`:
+
+```python
+from faststream import FastStream
+from taskiq_faststream import AppWrapper
+from taskiq.middlewares.otel_middleware import OpenTelemetryMiddleware
+
+app = FastStream(broker)
+
+# Enable OpenTelemetry middleware
+taskiq_broker = AppWrapper(app, middlewares=[OpenTelemetryMiddleware()])
 ```

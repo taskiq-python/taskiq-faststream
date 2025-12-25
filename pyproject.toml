@@ -1,13 +1,13 @@
 [project]
 name = "taskiq-faststream"
-version = "0.3.2"
+version = "0.4.0"
 description = "FastStream - taskiq integration to schedule FastStream tasks"
 readme = "README.md"
 license = "MIT"
 license-files = ["LICENSE"]
 authors = [
     { name = "Taskiq team", email = "taskiq@no-reply.com" },
-    { name = "Nikita Pastukhov", email = "nikita@pastukhov-dev.com" },
+    { name = "Nikita Pastukhov", email = "nikita@pastukhov-dev.ru" },
 ]
 
 keywords = ["taskiq", "tasks", "distributed", "async", "FastStream"]
@@ -40,7 +40,7 @@ classifiers = [
 
 
 dependencies = [
-    "taskiq>=0.11.0,<0.12.0",
+    "taskiq>=0.12.1,<0.13.0",
     "faststream>=0.3.14,<0.7",
 ]
 
@@ -65,6 +65,10 @@ redis = [
     "faststream[redis]"
 ]
 
+otel = [
+    "taskiq[opentelemetry]"
+]
+
 [dependency-groups]
 test = [
     "taskiq-faststream[nats]",
@@ -72,16 +76,16 @@ test = [
     "taskiq-faststream[kafka]",
     "taskiq-faststream[confluent]",
     "taskiq-faststream[redis]",
-
+    "taskiq-faststream[otel]",
     "coverage[toml]>=7.2.0,<8.0.0",
-    "pytest>=7.4.0,<9",
+    "pytest>=7.4.0,<10",
     "freezegun>=1.2.2"
 ]
 
 dev = [
     {include-group = "test"},
-    "mypy==1.18.2",
-    "ruff==0.14.0",
+    "mypy==1.19.1",
+    "ruff==0.14.10",
     "pre-commit >=3.6.0,<5.0.0",
 ]
 

@@ -15,7 +15,7 @@ jobs:
     if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - uses: actions/setup-python@v6
         with:
           python-version: 3.13
@@ -41,11 +41,11 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.10", "3.11", "3.12", "3.13"]
+        python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
       fail-fast: false
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
@@ -64,7 +64,7 @@ jobs:
           COVERAGE_FILE: coverage/.coverage.${{ runner.os }}-py${{ matrix.python-version }}-${{ matrix.pydantic-version }}
           CONTEXT: ${{ runner.os }}-py${{ matrix.python-version }}-${{ matrix.pydantic-version }}
       - name: Store coverage files
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: .coverage.${{ runner.os }}-py${{ matrix.python-version }}-${{ matrix.pydantic-version }}
           path: coverage
@@ -76,7 +76,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - uses: actions/setup-python@v6
         with:
@@ -87,7 +87,7 @@ jobs:
           version: "latest"
 
       - name: Get coverage files
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v7
         with:
           pattern: .coverage*
           path: coverage
@@ -101,7 +101,7 @@ jobs:
       - run: coverage html --show-contexts --title "taskiq-faststream coverage for ${{ github.sha }}"
 
       - name: Store coverage html
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: coverage-html
           path: htmlcov

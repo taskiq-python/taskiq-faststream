@@ -1,11 +1,13 @@
 import typing
 import warnings
+from collections.abc import Iterable
 from typing import Any, TypeAlias
 
 import anyio
 from faststream._internal.application import Application
 from faststream.types import SendableMessage
 from taskiq import AsyncBroker
+from taskiq.abc.middleware import TaskiqMiddleware
 from taskiq.acks import AckableMessage
 from taskiq.decor import AsyncTaskiqDecoratedTask
 
@@ -30,10 +32,22 @@ class BrokerWrapper(AsyncBroker):
         task : Register FastStream scheduled task.
     """
 
-    def __init__(self, broker: Any) -> None:
+    def __init__(
+        self,
+        broker: Any,
+        *,
+        middlewares: Iterable[TaskiqMiddleware] = (),
+    ) -> None:
+        """Initialize BrokerWrapper.
+
+        Args:
+            broker: FastStream broker instance to wrap.
+            middlewares: Middlewares to add to the broker.
+        """
         super().__init__()
         self.formatter = PatchedFormatter()
         self.broker = broker
+        self.add_middlewares(*middlewares)
 
     async def startup(self) -> None:
         """Startup wrapped FastStream broker."""
@@ -105,10 +119,22 @@ class AppWrapper(BrokerWrapper):
         task : Register FastStream scheduled task.
     """
 
-    def __init__(self, app: Application) -> None:
+    def __init__(
+        self,
+        app: Application,
+        *,
+        middlewares: Iterable[TaskiqMiddleware] = (),
+    ) -> None:
+        """Initialize AppWrapper.
+
+        Args:
+            app: FastStream application instance to wrap.
+            middlewares: Middlewares to add to the broker.
+        """
         super(BrokerWrapper, self).__init__()
         self.formatter = PatchedFormatter()
         self.app = app
+        self.add_middlewares(*middlewares)
 
     async def startup(self) -> None:
         """Startup wrapped FastStream."""
