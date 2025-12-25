@@ -1,22 +1,19 @@
 import typing
 import warnings
+from collections.abc import Iterable
 from typing import Any, TypeAlias
 
 import anyio
 from faststream._internal.application import Application
 from faststream.types import SendableMessage
 from taskiq import AsyncBroker
+from taskiq.abc.middleware import TaskiqMiddleware
 from taskiq.acks import AckableMessage
 from taskiq.decor import AsyncTaskiqDecoratedTask
 
 from taskiq_faststream.formatter import PatchedFormatter, PatchedMessage
 from taskiq_faststream.types import ScheduledTask
 from taskiq_faststream.utils import resolve_msg
-
-try:
-    from taskiq.middlewares.otel_middleware import OpenTelemetryMiddleware
-except ImportError:
-    OpenTelemetryMiddleware = None  # type: ignore[assignment,misc]
 
 PublishParameters: TypeAlias = typing.Any
 
@@ -39,27 +36,18 @@ class BrokerWrapper(AsyncBroker):
         self,
         broker: Any,
         *,
-        enable_otel: bool = False,
+        middlewares: Iterable[TaskiqMiddleware] = (),
     ) -> None:
         """Initialize BrokerWrapper.
 
         Args:
             broker: FastStream broker instance to wrap.
-            enable_otel: Enable OpenTelemetry middleware for distributed tracing.
-                Requires taskiq[otel] to be installed.
+            middlewares: Middlewares to add to the broker.
         """
         super().__init__()
         self.formatter = PatchedFormatter()
         self.broker = broker
-
-        if enable_otel:
-            if OpenTelemetryMiddleware is None:
-                msg = (
-                    "OpenTelemetry middleware requires taskiq[otel] to be installed. "
-                    "Install it with: pip install taskiq-faststream[otel]"
-                )
-                raise ImportError(msg)
-            self.middlewares.append(OpenTelemetryMiddleware())
+        self.add_middlewares(*middlewares)
 
     async def startup(self) -> None:
         """Startup wrapped FastStream broker."""
@@ -135,27 +123,18 @@ class AppWrapper(BrokerWrapper):
         self,
         app: Application,
         *,
-        enable_otel: bool = False,
+        middlewares: Iterable[TaskiqMiddleware] = (),
     ) -> None:
         """Initialize AppWrapper.
 
         Args:
             app: FastStream application instance to wrap.
-            enable_otel: Enable OpenTelemetry middleware for distributed tracing.
-                Requires taskiq[otel] to be installed.
+            middlewares: Middlewares to add to the broker.
         """
         super(BrokerWrapper, self).__init__()
         self.formatter = PatchedFormatter()
         self.app = app
-
-        if enable_otel:
-            if OpenTelemetryMiddleware is None:
-                msg = (
-                    "OpenTelemetry middleware requires taskiq[otel] to be installed. "
-                    "Install it with: pip install taskiq-faststream[otel]"
-                )
-                raise ImportError(msg)
-            self.middlewares.append(OpenTelemetryMiddleware())
+        self.add_middlewares(*middlewares)
 
     async def startup(self) -> None:
         """Startup wrapped FastStream."""

@@ -150,16 +150,17 @@ taskiq_broker.task(
 
 ## OpenTelemetry Support
 
-**taskiq-faststream** supports distributed tracing with OpenTelemetry. To enable it, install the `otel` extra and pass `enable_otel=True` when creating the broker wrapper:
+**taskiq-faststream** supports taskiq's OpenTelemetry middleware. To enable it, pass `OpenTelemetryMiddleware` when creating the broker wrapper:
 
 ```python
 from faststream.nats import NatsBroker
 from taskiq_faststream import BrokerWrapper
+from taskiq.middlewares.otel_middleware import OpenTelemetryMiddleware
 
 broker = NatsBroker()
 
 # Enable OpenTelemetry middleware
-taskiq_broker = BrokerWrapper(broker, enable_otel=True)
+taskiq_broker = BrokerWrapper(broker, middlewares=[OpenTelemetryMiddleware()])
 ```
 
 This will automatically add OpenTelemetry middleware to track task execution, providing insights into:
@@ -175,9 +176,10 @@ The same applies to `AppWrapper`:
 ```python
 from faststream import FastStream
 from taskiq_faststream import AppWrapper
+from taskiq.middlewares.otel_middleware import OpenTelemetryMiddleware
 
 app = FastStream(broker)
 
 # Enable OpenTelemetry middleware
-taskiq_broker = AppWrapper(app, enable_otel=True)
+taskiq_broker = AppWrapper(app, middlewares=[OpenTelemetryMiddleware()])
 ```
