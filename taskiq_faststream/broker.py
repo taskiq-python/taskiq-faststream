@@ -56,7 +56,9 @@ class BrokerWrapper(AsyncBroker):
 
     async def shutdown(self) -> None:
         """Shutdown wrapped FastStream broker."""
-        await self.broker.close()
+        # `stop` replaced `close` in FastStream 0.5.44; `close` removed in 0.7.0.
+        stop = getattr(self.broker, "stop", None) or self.broker.close
+        await stop()
         await super().shutdown()
 
     async def kick(self, message: PatchedMessage) -> None:  # type: ignore[override]
