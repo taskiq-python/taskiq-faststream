@@ -1,6 +1,6 @@
 [project]
 name = "taskiq-faststream"
-version = "0.4.0"
+version = "0.4.1"
 description = "FastStream - taskiq integration to schedule FastStream tasks"
 readme = "README.md"
 license = "MIT"
