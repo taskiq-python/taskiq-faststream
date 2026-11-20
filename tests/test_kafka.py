@@ -1,7 +1,6 @@
 import pytest
 from faststream import FastStream
 from faststream.kafka import KafkaBroker, TestKafkaBroker
-from taskiq import AsyncBroker
 
 from taskiq_faststream import AppWrapper
 
@@ -20,13 +19,13 @@ class TestBroker(SchedulerTestcase):
 
 class TestApp(TestBroker):
     @staticmethod
-    def build_taskiq_broker(broker: KafkaBroker) -> AsyncBroker:
+    def build_taskiq_broker(broker: KafkaBroker) -> AppWrapper:
         """Build AppWrapper."""
         return AppWrapper(FastStream(broker))
 
 
 class TestAsgiApp(TestBroker):
     @staticmethod
-    def build_taskiq_broker(broker: KafkaBroker) -> AsyncBroker:
+    def build_taskiq_broker(broker: KafkaBroker) -> AppWrapper:
         """Build AppWrapper."""
         return AppWrapper(FastStream(broker).as_asgi())
