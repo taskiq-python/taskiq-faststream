@@ -34,13 +34,12 @@ classifiers = [
     "Intended Audience :: Developers",
     "Intended Audience :: Information Technology",
     "Framework :: Pydantic",
-    "Framework :: Pydantic :: 1",
     "Framework :: Pydantic :: 2",
 ]
 
 
 dependencies = [
-    "taskiq>=0.12.1,<0.13.0",
+    "taskiq>=0.12.1,<0.14.0",
     "faststream>=0.3.14,<0.8",
 ]
 
