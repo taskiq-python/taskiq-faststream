@@ -8,7 +8,6 @@ import anyio
 import pytest
 from faststream.types import SendableMessage
 from freezegun import freeze_time
-from taskiq import AsyncBroker
 from taskiq.cli.scheduler.args import SchedulerArgs
 from taskiq.cli.scheduler.run import run_scheduler
 from taskiq.schedule_sources import LabelScheduleSource
@@ -23,7 +22,7 @@ class SchedulerTestcase:
     subj_name: str
 
     @staticmethod
-    def build_taskiq_broker(broker: Any) -> AsyncBroker:
+    def build_taskiq_broker(broker: Any) -> BrokerWrapper:
         """Build Taskiq compatible object."""
         return BrokerWrapper(broker)
 
