@@ -1,7 +1,6 @@
 import pytest
 from faststream import FastStream
 from faststream.redis import RedisBroker, TestRedisBroker
-from taskiq import AsyncBroker
 
 from taskiq_faststream import AppWrapper
 
@@ -20,13 +19,13 @@ class TestBroker(SchedulerTestcase):
 
 class TestApp(TestBroker):
     @staticmethod
-    def build_taskiq_broker(broker: RedisBroker) -> AsyncBroker:
+    def build_taskiq_broker(broker: RedisBroker) -> AppWrapper:
         """Build AppWrapper."""
         return AppWrapper(FastStream(broker))
 
 
 class TestAsgiApp(TestBroker):
     @staticmethod
-    def build_taskiq_broker(broker: RedisBroker) -> AsyncBroker:
+    def build_taskiq_broker(broker: RedisBroker) -> AppWrapper:
         """Build AppWrapper."""
         return AppWrapper(FastStream(broker).as_asgi())

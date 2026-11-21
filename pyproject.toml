@@ -1,6 +1,6 @@
 [project]
 name = "taskiq-faststream"
-version = "0.4.1"
+version = "0.4.2"
 description = "FastStream - taskiq integration to schedule FastStream tasks"
 readme = "README.md"
 license = "MIT"
@@ -25,6 +25,7 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: 3.15",
     "Operating System :: OS Independent",
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Topic :: Software Development :: Libraries",
@@ -34,13 +35,12 @@ classifiers = [
     "Intended Audience :: Developers",
     "Intended Audience :: Information Technology",
     "Framework :: Pydantic",
-    "Framework :: Pydantic :: 1",
     "Framework :: Pydantic :: 2",
 ]
 
 
 dependencies = [
-    "taskiq>=0.12.1,<0.13.0",
+    "taskiq>=0.12.1,<0.14.0",
     "faststream>=0.3.14,<0.8",
 ]
 
@@ -84,8 +84,8 @@ test = [
 
 dev = [
     {include-group = "test"},
-    "mypy==1.20.0",
-    "ruff==0.15.9",
+    "mypy==2.1.0",
+    "ruff==0.15.17",
     "pre-commit >=3.6.0,<5.0.0",
 ]
 
