@@ -49,6 +49,8 @@ pip install taskiq-faststream[confluent]
 pip install taskiq-faststream[nats]
 # or
 pip install taskiq-faststream[redis]
+# or
+pip install taskiq-faststream[mqtt]
 ```
 
 For **OpenTelemetry** distributed tracing support:
