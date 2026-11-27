@@ -61,12 +61,12 @@ jobs:
       - name: Test
         run: bash scripts/test.sh
         env:
-          COVERAGE_FILE: coverage/.coverage.${{ runner.os }}-py${{ matrix.python-version }}-${{ matrix.pydantic-version }}
-          CONTEXT: ${{ runner.os }}-py${{ matrix.python-version }}-${{ matrix.pydantic-version }}
+          COVERAGE_FILE: coverage/.coverage.${{ runner.os }}-py${{ matrix.python-version }}
+          CONTEXT: ${{ runner.os }}-py${{ matrix.python-version }}
       - name: Store coverage files
         uses: actions/upload-artifact@v7
         with:
-          name: .coverage.${{ runner.os }}-py${{ matrix.python-version }}-${{ matrix.pydantic-version }}
+          name: .coverage.${{ runner.os }}-py${{ matrix.python-version }}
           path: coverage
           if-no-files-found: error
           include-hidden-files: true
@@ -109,10 +109,12 @@ jobs:
           include-hidden-files: true
 
   # https://github.com/marketplace/actions/alls-green#why
-  check:  # This job does nothing and is only used for the branch protection
-    if: github.event.pull_request.draft == false
+  check:  # Aggregate required status for branch protection, including failed prerequisites.
+    if: always() && github.event.pull_request.draft == false
 
     needs:
+      - static_analysis
+      - test
       - coverage-combine
 
     runs-on: ubuntu-latest
