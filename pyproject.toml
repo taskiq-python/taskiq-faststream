@@ -1,6 +1,6 @@
 [project]
 name = "taskiq-faststream"
-version = "0.4.2"
+version = "0.4.3"
 description = "FastStream - taskiq integration to schedule FastStream tasks"
 readme = "README.md"
 license = "MIT"
@@ -65,6 +65,10 @@ redis = [
     "faststream[redis]"
 ]
 
+mqtt = [
+    "faststream[mqtt]>=0.7.0"
+]
+
 otel = [
     "taskiq[opentelemetry]"
 ]
@@ -76,6 +80,7 @@ test = [
     "taskiq-faststream[kafka]",
     "taskiq-faststream[confluent]",
     "taskiq-faststream[redis]",
+    "taskiq-faststream[mqtt]",
     "taskiq-faststream[otel]",
     "coverage[toml]>=7.2.0,<8.0.0",
     "pytest>=7.4.0,<10",
