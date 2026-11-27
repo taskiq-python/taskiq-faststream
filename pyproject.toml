@@ -89,8 +89,8 @@ test = [
 
 dev = [
     {include-group = "test"},
-    "mypy==2.1.0",
-    "ruff==0.15.17",
+    "mypy==2.4.1",
+    "ruff==0.17.6",
     "pre-commit >=3.6.0,<5.0.0",
 ]
 
