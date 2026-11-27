@@ -16,6 +16,9 @@
     <a href="https://github.com/taskiq-python/taskiq-faststream/blob/master/LICENSE" target="_blank">
         <img alt="GitHub" src="https://img.shields.io/github/license/taskiq-python/taskiq-faststream?color=%23007ec6">
     </a>
+    <a href="https://faststream.ag2.ai" target="_blank">
+        <img src="https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fag2ai%2Ffaststream%2Fmain%2Fdocs%2Fdocs%2Fen%2Fassets%2Fimg%2Fshield.json" alt="FastStream">
+    </a>
 </p>
 
 ---
