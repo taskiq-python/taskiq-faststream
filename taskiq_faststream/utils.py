@@ -10,12 +10,12 @@ except ImportError:
 
 
 async def resolve_msg(
-    msg: None
-    | SendableMessage
+    msg: SendableMessage
     | typing.Callable[[], SendableMessage]
     | typing.Callable[[], typing.Awaitable[SendableMessage]]
     | typing.Callable[[], typing.Iterator[SendableMessage]]
-    | typing.Callable[[], typing.AsyncIterator[SendableMessage]],
+    | typing.Callable[[], typing.AsyncIterator[SendableMessage]]
+    | None,
 ) -> typing.AsyncIterator[SendableMessage]:
     """Resolve message generation callback.
 
