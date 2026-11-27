@@ -83,12 +83,12 @@ class BrokerWrapper(AsyncBroker):
 
     def task(  # type: ignore[override]
         self,
-        message: None
-        | SendableMessage
+        message: SendableMessage
         | typing.Callable[[], SendableMessage]
         | typing.Callable[[], typing.Awaitable[SendableMessage]]
         | typing.Callable[[], typing.Generator[SendableMessage, None, None]]
-        | typing.Callable[[], typing.AsyncGenerator[SendableMessage, None]] = None,
+        | typing.Callable[[], typing.AsyncGenerator[SendableMessage, None]]
+        | None = None,
         *,
         schedule: list[ScheduledTask],
         **kwargs: PublishParameters,
